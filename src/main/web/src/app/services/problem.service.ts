@@ -26,11 +26,21 @@ export class ProblemService {
     }
 
     createReasonGroup(request: CreateReasonGroupRequest): Observable<ReasonGroup> {
-        return this.httpClient.post<ReasonGroup>(Api.REASON_GROUPS, request);
+        return this.httpClient.post<ReasonGroup>(Api.REASON_GROUPS, request).pipe(
+            catchError(error => {
+                this.snackBar.open(" Не удалось создать шаблон: " + error.error.message);
+                return throwError(error);
+            })
+        );
     }
 
     updateReasonGroup(reasonGroupId: number, request: CreateReasonGroupRequest): Observable<ReasonGroup> {
-        return this.httpClient.put<ReasonGroup>(Api.REASON_GROUPS + "/" + reasonGroupId, request);
+        return this.httpClient.put<ReasonGroup>(Api.REASON_GROUPS + "/" + reasonGroupId, request).pipe(
+            catchError(error => {
+                this.snackBar.open(" Не удалось обновить шаблон: " + error.error.message);
+                return throwError(error);
+            })
+        );
     }
 
     getReasons(): Observable<CityObject[]> {

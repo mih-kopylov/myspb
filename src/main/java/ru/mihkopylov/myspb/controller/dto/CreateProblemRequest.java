@@ -15,6 +15,6 @@ public class CreateProblemRequest {
     private Double latitude;
     @NotNull(message = "Координаты: долгота обязательна")
     private Double longitude;
-    @NotEmpty(message = "Должен быть как минимум один файл")
+    @NotEmpty(message = "Нужно как минимум одно фото")
     private MultipartFile[] files;
 }

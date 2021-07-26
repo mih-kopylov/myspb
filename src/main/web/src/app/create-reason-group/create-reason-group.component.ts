@@ -5,7 +5,6 @@ import {ReasonGroup} from "../model/reason-group";
 import {isDefined} from "@angular/compiler/src/util";
 import {ActivatedRoute, Router} from "@angular/router";
 import {finalize} from "rxjs/operators";
-import {MatSnackBar} from "@angular/material";
 
 @Component({
     selector: "app-create-reason-group",
@@ -17,23 +16,14 @@ export class CreateReasonGroupComponent implements OnInit {
     request = new CreateReasonGroupRequest();
     reasonGroups: ReasonGroup[] = [];
     creating: boolean = false;
-    private reasonsMap = new Map<string, InnerReason[]>();
+    reasonsMap = new Map<string, InnerReason[]>();
     private id: number;
 
     constructor(
         private problemService: ProblemService,
         private router: Router,
         private route: ActivatedRoute,
-        private snackBar: MatSnackBar,
     ) {
-    }
-
-    private static getErrorMessageByStatus(status: number): string {
-        if (status === 409) {
-            return "Такое название уже существует";
-        } else {
-            return "Произошла ошибка";
-        }
     }
 
     ngOnInit() {
@@ -76,11 +66,8 @@ export class CreateReasonGroupComponent implements OnInit {
         observable
             .pipe(
                 finalize(() => this.creating = false))
-            .subscribe(() => this.router.navigate(["/"], {queryParams: {"parentId": this.id ? this.id : this.request.parentId}}),
-                error => {
-                    let message: string = CreateReasonGroupComponent.getErrorMessageByStatus(error.status);
-                    this.snackBar.open(message);
-                });
+            .subscribe(() => this.router.navigate(["/"],
+                {queryParams: {"parentId": this.id ? this.id : this.request.parentId}}));
     }
 
     getSelectedReason(): InnerReason {

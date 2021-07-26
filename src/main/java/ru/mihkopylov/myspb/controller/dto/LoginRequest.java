@@ -7,8 +7,8 @@ import lombok.Setter;
 @Getter
 @Setter
 public class LoginRequest {
-    @NotBlank
+    @NotBlank(message = "Логин обязателен")
     private String login;
-    @NotBlank
+    @NotBlank(message = "Пароль обязателен")
     private String password;
 }

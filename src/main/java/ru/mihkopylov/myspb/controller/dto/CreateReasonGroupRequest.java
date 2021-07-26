@@ -7,7 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class CreateReasonGroupRequest {
-    @NotBlank
+    @NotBlank(message = "Название обязательно")
     private String name;
     private Long parentId;
     private Long reasonId;
