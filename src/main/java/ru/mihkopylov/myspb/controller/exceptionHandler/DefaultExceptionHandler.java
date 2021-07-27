@@ -11,9 +11,9 @@ import ru.mihkopylov.myspb.controller.dto.ErrorResponse;
 @Slf4j
 public class DefaultExceptionHandler {
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> handle( Exception exception ) {
-        log.error( "Exception", exception );
-        return ResponseEntity.status( HttpStatus.INTERNAL_SERVER_ERROR )
-                .body( new ErrorResponse( exception.getMessage() ) );
+    public ResponseEntity<ErrorResponse> handle(Exception exception) {
+        log.error("Uncaught exception happened", exception);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(new ErrorResponse("Something went wrong"));
     }
 }

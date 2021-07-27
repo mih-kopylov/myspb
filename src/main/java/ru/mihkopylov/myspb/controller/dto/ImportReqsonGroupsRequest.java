@@ -10,6 +10,6 @@ public class ImportReqsonGroupsRequest {
     /**
      * Login of the user whose reason groups will be imported to current user
      */
-    @NotBlank
+    @NotBlank(message = "Логин обязателен")
     private String login;
 }
