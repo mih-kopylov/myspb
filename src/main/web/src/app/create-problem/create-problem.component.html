@@ -7,7 +7,7 @@
              fxFlex.gt-xs="50"
              fxFlex.xs="100"
         >
-            <form #createProblemForm="ngForm" fxLayout="column" fxLayoutGap="10px">
+            <form #createProblemForm="ngForm" [formGroup]="form" fxLayout="column" fxLayoutGap="10px">
                 <button (click)="fileInput.click()"
                         mat-raised-button
                         [disabled]="creating"
@@ -18,6 +18,12 @@
                 <div fxLayout="row" fxLayoutGap="5px">
                     <img *ngFor="let file of files" [src]="file.preview" height="100" alt="preview"
                          (click)="deleteFile(file)">
+                </div>
+                <div fxLayout="row">
+                    <mat-form-field appearance="fill" fxFlex>
+                        <mat-label>Текст обращения</mat-label>
+                        <textarea matInput cdkTextareaAutosize formControlName="body" name="body"></textarea>
+                    </mat-form-field>
                 </div>
 
                 <button (click)="doSend()"

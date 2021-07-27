@@ -52,6 +52,7 @@ export class ProblemService {
         body.append("reasonGroupId", model.reasonGroupId.toString());
         body.append("latitude", model.latitude.toString());
         body.append("longitude", model.longitude.toString());
+        body.append("body", model.body)
         model.files.forEach(file => body.append("files", file, file.name));
         return this.httpClient.post<Problem>(Api.PROBLEM, body).pipe(
             catchError(error => {
