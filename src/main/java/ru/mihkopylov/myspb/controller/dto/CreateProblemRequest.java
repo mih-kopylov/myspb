@@ -1,10 +1,11 @@
 package ru.mihkopylov.myspb.controller.dto;
 
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.web.multipart.MultipartFile;
+
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 @Getter
 @Setter
@@ -17,4 +18,6 @@ public class CreateProblemRequest {
     private Double longitude;
     @NotEmpty(message = "Нужно как минимум одно фото")
     private MultipartFile[] files;
+    @NotEmpty(message = "Текст обращения обязателен")
+    private String body;
 }

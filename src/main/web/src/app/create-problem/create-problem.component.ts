@@ -5,6 +5,7 @@ import {CreateProblemRequest} from "../model/create-problem-request";
 import {GeoService} from "../services/geo.service";
 import {MatSnackBar} from "@angular/material";
 import {finalize} from "rxjs/operators";
+import {FormBuilder, FormGroup} from "@angular/forms";
 
 @Component({
     selector: "app-create-problem",
@@ -13,6 +14,9 @@ import {finalize} from "rxjs/operators";
 })
 export class CreateProblemComponent implements OnInit {
     creating = false;
+    form: FormGroup = this.formBuilder.group({
+        body: [""],
+    })
     model = new CreateProblemRequest();
     files: SelectedFile[] = [];
     @ViewChild("fileInput")
@@ -24,12 +28,16 @@ export class CreateProblemComponent implements OnInit {
         private route: ActivatedRoute,
         private geoService: GeoService,
         private snackBar: MatSnackBar,
+        private formBuilder: FormBuilder,
     ) {
     }
 
     ngOnInit() {
         this.route.queryParams.subscribe(params => {
             this.model.reasonGroupId = +params.parentId;
+            this.problemService.getReasonGroup(this.model.reasonGroupId).subscribe(reasonGroup => {
+                this.form.controls.body.setValue(reasonGroup.body);
+            });
         });
     }
 
@@ -57,8 +65,10 @@ export class CreateProblemComponent implements OnInit {
     }
 
     doSend() {
-        this.model.latitude = this.geoService.getCoords().latitude;
-        this.model.longitude = this.geoService.getCoords().longitude;
+        let coords = this.geoService.getCoords();
+        this.model.latitude = coords.latitude;
+        this.model.longitude = coords.longitude;
+        this.model.body = this.form.controls.body.value;
         this.model.files = [];
         for (const file of this.files) {
             this.model.files.push(file.file);

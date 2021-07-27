@@ -3,4 +3,5 @@ export class CreateProblemRequest {
     latitude: number;
     longitude: number;
     files: File[] = [];
+    body: string;
 }
