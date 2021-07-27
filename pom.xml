@@ -16,7 +16,7 @@
     <properties>
         <java.version>11</java.version>
         <jackson-datatype-jsr310.version>2.9.8</jackson-datatype-jsr310.version>
-        <guava.version>27.0-jre</guava.version>
+        <guava.version>29.0-jre</guava.version>
         <versioner-maven-plugin.version>3.2.1</versioner-maven-plugin.version>
         <frontend-maven-plugin.version>1.7.6</frontend-maven-plugin.version>
         <frontend-maven-plugin.nodeVersion>v10.15.3</frontend-maven-plugin.nodeVersion>
