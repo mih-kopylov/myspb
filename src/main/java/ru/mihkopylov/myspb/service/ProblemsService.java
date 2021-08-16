@@ -11,7 +11,7 @@ import ru.mihkopylov.myspb.exception.NoReasonInReasonGroupException;
 import ru.mihkopylov.myspb.exception.PositionTypeNotFoundException;
 import ru.mihkopylov.myspb.exception.ReasonGroupNotFoundException;
 import ru.mihkopylov.myspb.exception.UserNotFoundException;
-import ru.mihkopylov.myspb.interceptor.RequestContext;
+import ru.mihkopylov.myspb.interceptor.SessionContext;
 import ru.mihkopylov.myspb.model.ReasonGroup;
 import ru.mihkopylov.myspb.model.User;
 import ru.mihkopylov.myspb.service.dto.*;
@@ -31,7 +31,7 @@ public class ProblemsService {
     @NonNull
     private final HttpService httpService;
     @NonNull
-    private final RequestContext requestContext;
+    private final SessionContext sessionContext;
     @NonNull
     private final MapsService mapsService;
 
@@ -48,7 +48,7 @@ public class ProblemsService {
     @NonNull
     public ProblemResponse createProblem(@NonNull Long reasonGroupId, @NonNull Double latitude,
                                          @NonNull Double longitude, @NonNull MultipartFile[] files, @NonNull String body) {
-        User user = requestContext.getUser().orElseThrow(UserNotFoundException::new);
+        User user = sessionContext.getUser().orElseThrow(UserNotFoundException::new);
         ReasonGroup reasonGroup = reasonGroupService.findByUserAndId(user, reasonGroupId)
                 .orElseThrow(ReasonGroupNotFoundException::new);
         if (isNull(reasonGroup.getReasonId())) {

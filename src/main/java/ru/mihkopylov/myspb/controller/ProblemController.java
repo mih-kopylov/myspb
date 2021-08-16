@@ -3,6 +3,7 @@ package ru.mihkopylov.myspb.controller;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.mihkopylov.myspb.Const;
 import ru.mihkopylov.myspb.aspect.RefreshTokenIfRequired;
@@ -23,6 +24,7 @@ public class ProblemController {
     private final ProblemsService problemsService;
 
     @GetMapping
+    @ResponseStatus(HttpStatus.OK)
     @RefreshTokenIfRequired
     public List<ShortProblemResponse> getProblems() {
         log.debug("get problems");
@@ -30,6 +32,7 @@ public class ProblemController {
     }
 
     @GetMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
     @RefreshTokenIfRequired
     public ProblemResponse getProblem(@PathVariable("id") Long id) {
         log.debug("get problem: id={}", id);
@@ -37,6 +40,7 @@ public class ProblemController {
     }
 
     @PostMapping
+    @ResponseStatus(HttpStatus.OK)
     @RefreshTokenIfRequired
     public ProblemResponse createProblem(@ModelAttribute @Valid CreateProblemRequest request) {
         log.debug("create problem");

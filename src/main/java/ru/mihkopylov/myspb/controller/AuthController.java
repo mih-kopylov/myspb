@@ -1,18 +1,17 @@
 package ru.mihkopylov.myspb.controller;
 
-import javax.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 import ru.mihkopylov.myspb.Const;
 import ru.mihkopylov.myspb.controller.dto.LoginRequest;
-import ru.mihkopylov.myspb.interceptor.AuthAfterHandleResponseBodyAdvice;
+import ru.mihkopylov.myspb.interceptor.SessionContext;
+import ru.mihkopylov.myspb.model.User;
 import ru.mihkopylov.myspb.service.LoginService;
+
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping(Const.REST + "/auth")
@@ -21,19 +20,21 @@ import ru.mihkopylov.myspb.service.LoginService;
 public class AuthController {
     @NonNull
     private final LoginService loginService;
+    @NonNull
+    private final SessionContext sessionContext;
 
-    /**
-     * This method returns ResponseEntity as a workaround of Srping's feature
-     * Actually no response is required here.
-     * The user's token will be put to headers in {@link AuthAfterHandleResponseBodyAdvice}
-     * But if the method returns {@code void}, the token won't be written to response headers.
-     * So returning ResponseEntity without a body is a workaround of this feature.
-     */
     @PostMapping("/login")
-    public ResponseEntity<String> login( @RequestBody @Valid LoginRequest request ) {
+    @ResponseStatus(HttpStatus.OK)
+    public void login(@RequestBody @Valid LoginRequest request) {
         String login = request.getLogin().trim();
-        log.debug( "login user: login={}", login );
-        loginService.login( login, request.getPassword() );
-        return ResponseEntity.ok().build();
+        log.debug("login user: login={}", login);
+        loginService.login(login, request.getPassword().trim());
+    }
+
+    @PostMapping("/logout")
+    @ResponseStatus(HttpStatus.OK)
+    public void logout() {
+        log.debug("logout user: login={}", sessionContext.getUser().map(User::getLogin).orElse(null));
+        sessionContext.clear();
     }
 }

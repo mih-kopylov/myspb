@@ -1,18 +1,19 @@
 package ru.mihkopylov.myspb.interceptor;
 
-import java.util.Optional;
 import lombok.NonNull;
 import lombok.Setter;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
-import org.springframework.web.context.annotation.RequestScope;
+import org.springframework.web.context.annotation.SessionScope;
 import ru.mihkopylov.myspb.model.User;
 import ru.mihkopylov.myspb.service.dto.Token;
 
+import java.util.Optional;
+
 @Component
-@RequestScope
+@SessionScope
 @Setter
-public class RequestContext {
+public class SessionContext {
     @Nullable
     private Token token;
     @Nullable
@@ -20,11 +21,16 @@ public class RequestContext {
 
     @NonNull
     public Optional<Token> getToken() {
-        return Optional.ofNullable( token );
+        return Optional.ofNullable(token);
     }
 
     @NonNull
     public Optional<User> getUser() {
-        return Optional.ofNullable( user );
+        return Optional.ofNullable(user);
+    }
+
+    public void clear() {
+        token = null;
+        user = null;
     }
 }

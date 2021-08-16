@@ -1,27 +1,19 @@
-import {Component, OnInit} from "@angular/core";
+import {Component} from "@angular/core";
 import {AuthService} from "../services/auth.service";
 import {Router} from "@angular/router";
-import {isDefined} from "@angular/compiler/src/util";
 
 @Component({
     selector: "app-login",
     templateUrl: "./login.component.html",
     styleUrls: ["./login.component.css"],
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent {
     model = new LoginForm();
 
     constructor(
         private authService: AuthService,
         private router: Router,
     ) {
-    }
-
-
-    ngOnInit() {
-        if (isDefined(AuthService.loadToken())) {
-            this.router.navigate(["/"]);
-        }
     }
 
     doLogin() {

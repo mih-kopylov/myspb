@@ -1,5 +1,6 @@
 package ru.mihkopylov.myspb.config;
 
+import lombok.NonNull;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -14,13 +15,13 @@ public class DevCorsConfiguration {
     public WebMvcConfigurer devCorsConfigurer() {
         return new WebMvcConfigurer() {
             @Override
-            public void addCorsMappings( CorsRegistry registry ) {
-                registry.addMapping( "/**" )
-                        .allowedHeaders( "*" )
-                        .exposedHeaders( Const.TOKEN )
-                        .allowedOrigins( "*" )
-                        .allowedMethods( "GET", "POST","PUT", "DELETE", "OPTIONS" )
-                        .allowCredentials( true );
+            public void addCorsMappings(@NonNull CorsRegistry registry) {
+                registry.addMapping("/**")
+                        .allowedHeaders("*")
+                        .exposedHeaders(Const.TOKEN)
+                        .allowedOrigins("*")
+                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                        .allowCredentials(true);
             }
         };
     }

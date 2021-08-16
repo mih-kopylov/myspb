@@ -41,9 +41,10 @@ export class ProfileComponent implements OnInit {
     }
 
     logout() {
-        this.authService.logout();
         this.profile = undefined;
-        this.router.navigate(["/login"]);
+        this.authService.logout().subscribe(() => {
+            this.router.navigate(["/login"]);
+        })
     }
 
     importFromUser() {

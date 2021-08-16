@@ -1,6 +1,5 @@
 package ru.mihkopylov.myspb.service;
 
-import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import org.springframework.stereotype.Service;
@@ -9,6 +8,8 @@ import ru.mihkopylov.myspb.Api;
 import ru.mihkopylov.myspb.dao.UserDao;
 import ru.mihkopylov.myspb.model.User;
 import ru.mihkopylov.myspb.service.dto.ProfileResponse;
+
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -21,27 +22,20 @@ public class UserService {
 
     @NonNull
     public ProfileResponse getProfile() {
-        return httpService.get( Api.PROFILE, ProfileResponse.class );
-    }
-
-    public void updateUser( @NonNull String login, @NonNull String accessToken ) {
-        Optional<User> user = userDao.findByLogin( login );
-        if (user.isEmpty()) {
-            userDao.create( login );
-        } else {
-            User savedUser = user.get();
-            savedUser.setToken( accessToken );
-            userDao.save( savedUser );
-        }
+        return httpService.get(Api.PROFILE, ProfileResponse.class);
     }
 
     @NonNull
-    public Optional<User> findUserByToken( @NonNull String token ) {
-        return userDao.findByToken( token );
+    public User createUserIfNotExists(@NonNull String login) {
+        return userDao.findByLogin(login).orElseGet(() -> {
+            User user = new User();
+            user.setLogin(login);
+            return userDao.save(user);
+        });
     }
 
     @NonNull
-    public Optional<User> findUserByLogin( @NonNull String login ) {
-        return userDao.findByLogin( login );
+    public Optional<User> findUserByLogin(@NonNull String login) {
+        return userDao.findByLogin(login);
     }
 }

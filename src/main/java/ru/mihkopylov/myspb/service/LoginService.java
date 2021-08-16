@@ -1,18 +1,19 @@
 package ru.mihkopylov.myspb.service;
 
-import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import ru.mihkopylov.myspb.Api;
-import ru.mihkopylov.myspb.Const;
+import ru.mihkopylov.myspb.config.ClientConfigurationProperties;
+import ru.mihkopylov.myspb.exception.UserNotFoundException;
+import ru.mihkopylov.myspb.interceptor.SessionContext;
 import ru.mihkopylov.myspb.model.User;
 import ru.mihkopylov.myspb.service.dto.Token;
 import ru.mihkopylov.myspb.service.dto.TokenResponse;
-import ru.mihkopylov.myspb.exception.UserNotFoundException;
-import ru.mihkopylov.myspb.interceptor.RequestContext;
+
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -22,36 +23,37 @@ public class LoginService {
     @NonNull
     private final UserService userService;
     @NonNull
-    private final RequestContext requestContext;
-
+    private final SessionContext sessionContext;
     @NonNull
-    public TokenResponse login( @NonNull String login, @NonNull String password ) {
-        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-        body.add( "username", login );
-        body.add( "password", password );
-        body.add( "grant_type", "password" );
-        body.add( "client_id", Const.CLIENT_ID );
-        body.add( "client_secret", Const.CLIENT_SECRET );
+    private final ClientConfigurationProperties clientConfigurationProperties;
 
-        TokenResponse response = httpService.post( Api.TOKEN, body, TokenResponse.class );
-        userService.updateUser( login, response.getAccessToken() );
-        requestContext.setToken( Token.fromResponse( response ) );
-        return response;
+    public void login(@NonNull String login, @NonNull String password) {
+        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+        body.add("username", login);
+        body.add("password", password);
+        body.add("grant_type", "password");
+        body.add("client_id", clientConfigurationProperties.getId());
+        body.add("client_secret", clientConfigurationProperties.getSecret());
+
+        TokenResponse response = httpService.post(Api.TOKEN, body, TokenResponse.class);
+        User user = userService.createUserIfNotExists(login);
+        sessionContext.setToken(Token.fromResponse(response));
+        sessionContext.setUser(user);
     }
 
     @NonNull
     public TokenResponse refreshToken() {
-        User user = requestContext.getUser().orElseThrow( UserNotFoundException :: new );
-        Optional<Token> token = requestContext.getToken();
+        User user = sessionContext.getUser().orElseThrow(UserNotFoundException::new);
+        Optional<Token> token = sessionContext.getToken();
 
         MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-        token.ifPresent( value -> body.add( "refresh_token", value.getRefreshToken() ) );
-        body.add( "grant_type", "refresh_token" );
-        body.add( "client_id", Const.CLIENT_ID );
-        body.add( "client_secret", Const.CLIENT_SECRET );
+        token.ifPresent(value -> body.add("refresh_token", value.getRefreshToken()));
+        body.add("grant_type", "refresh_token");
+        body.add("client_id", clientConfigurationProperties.getId());
+        body.add("client_secret", clientConfigurationProperties.getSecret());
 
-        TokenResponse response = httpService.post( Api.TOKEN, body, TokenResponse.class );
-        userService.updateUser( user.getLogin(), response.getAccessToken() );
+        TokenResponse response = httpService.post(Api.TOKEN, body, TokenResponse.class);
+        userService.createUserIfNotExists(user.getLogin());
         return response;
     }
 }
