@@ -15,10 +15,12 @@ jobs:
           cache: maven
       - name: Build artifact
         run: mvn package
+      - name: Set Release version env variable
+        run: echo "RELEASE_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)" >> $GITHUB_ENV
       - name: Upload JAR artifact
         uses: actions/upload-artifact@v3
         with:
-          name: jar
+          name: myspb-${{ env.RELEASE-VERSION }}.jar
           path: target/*.jar
       - name: Log in to the Container registry
         uses: docker/login-action@v1
@@ -28,5 +30,5 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Build and push Docker image
         run: |
-          docker build -t ghcr.io/mih-kopylov/myspb:latest .
-          docker push ghcr.io/mih-kopylov/myspb:latest
+          docker build -t ghcr.io/mih-kopylov/myspb:${{ env.RELEASE_VERSION }} .
+          docker push ghcr.io/mih-kopylov/myspb:${{ env.RELEASE_VERSION }}
