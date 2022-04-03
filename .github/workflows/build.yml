@@ -20,5 +20,7 @@ jobs:
         with:
           name: jar
           path: target/*.jar
-      - name: Build Docker image
-        run: docker build -t myspb .
+      - name: Build and push Docker image
+        run: |
+          docker build -t myspb .
+          docker push ghcr.io/mih-kopylov/myspb:latest
