@@ -28,7 +28,14 @@ jobs:
           registry: ghcr.io/mih-kopylov
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Build and push Docker image
+      - name: Build Docker image
+        run: docker build -t myspb .
+      - name: Push Docker image
         run: |
-          docker build -t ghcr.io/mih-kopylov/myspb:${{ env.RELEASE_VERSION }} .
+          docker tag myspb:latest ghcr.io/mih-kopylov/myspb:${{ env.RELEASE_VERSION }}
           docker push ghcr.io/mih-kopylov/myspb:${{ env.RELEASE_VERSION }}
+      - name: Add Latest tag
+        if: ${{ !endsWith(env.RELEASE_VERSION, 'SNAPSHOT') }}
+        run: |
+          docker tag myspb:latest ghcr.io/mih-kopylov/myspb:latest
+          docker push ghcr.io/mih-kopylov/myspb:latest
