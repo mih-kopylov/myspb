@@ -1,5 +1,17 @@
 version: "3.5"
 services:
+  myspb:
+    image: ghcr.io/mih-kopylov/myspb:latest
+    container_name: myspb
+    restart: always
+    depends_on:
+      - db
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://db/myspb?characterEncoding=utf-8
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=password
+    ports:
+      - 4000:8080
   db:
     image: mysql:8
     container_name: db
@@ -11,3 +23,4 @@ services:
       - 23306:3306
     volumes:
       - ./backup:/docker-entrypoint-initdb.d
+      - ./target/db:/var/lib/mysql
